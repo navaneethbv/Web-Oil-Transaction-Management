@@ -1,0 +1,108 @@
+create statements;
+
+CREATE TABLE `address` (
+ `stname` varchar(30) NOT NULL DEFAULT '',
+ `city` varchar(30) DEFAULT NULL,
+ `state` varchar(30) DEFAULT NULL,
+ `zipcode` varchar(10) NOT NULL DEFAULT '',
+ PRIMARY KEY (`stname`,`zipcode`)
+) ENGINE=InnoDB DEFAULT CHARSET=latin1
+
+CREATE TABLE `belongsto` (
+ `clientid` int(11) NOT NULL,
+ `category` varchar(15) NOT NULL DEFAULT '',
+ PRIMARY KEY (`clientid`),
+ KEY `category` (`category`),
+ CONSTRAINT `belongsto_ibfk_1` FOREIGN KEY (`clientid`) REFERENCES `client` (`id`) ON DELETE CASCADE,
+ CONSTRAINT `belongsto_ibfk_2` FOREIGN KEY (`category`) REFERENCES `clienttype` (`category`)
+) ENGINE=InnoDB DEFAULT CHARSET=latin1
+
+CREATE TABLE `client` (
+ `id` int(11) NOT NULL AUTO_INCREMENT,
+ `userid` varchar(20) NOT NULL,
+ `fname` varchar(20) NOT NULL,
+ `lname` varchar(20) NOT NULL,
+ `emailid` varchar(30) NOT NULL,
+ `cellnum` varchar(15) NOT NULL,
+ `phnum` varchar(15) NOT NULL,
+ `oilbalance` double NOT NULL,
+ `cashbalance` double NOT NULL DEFAULT '10000',
+ PRIMARY KEY (`id`),
+ KEY `userid` (`userid`),
+ KEY `userid_2` (`userid`),
+ CONSTRAINT `client_ibfk_1` FOREIGN KEY (`userid`) REFERENCES `login` (`USERID`) ON DELETE CASCADE
+) ENGINE=InnoDB AUTO_INCREMENT=4 DEFAULT CHARSET=latin1
+
+CREATE TABLE `clienttype` (
+ `category` varchar(15) NOT NULL DEFAULT '',
+ `comrate` double DEFAULT NULL,
+ PRIMARY KEY (`category`)
+) ENGINE=InnoDB DEFAULT CHARSET=latin1
+
+CREATE TABLE `client_trader_transaction_history` (
+ `client_id` int(11) NOT NULL DEFAULT '0',
+ `trader_id` int(11) NOT NULL DEFAULT '0',
+ `transaction_id` int(11) NOT NULL DEFAULT '0',
+ PRIMARY KEY (`client_id`,`trader_id`,`transaction_id`),
+ KEY `trader_id` (`trader_id`),
+ KEY `transaction_id` (`transaction_id`),
+ CONSTRAINT `client_trader_transaction_history_ibfk_1` FOREIGN KEY (`client_id`) REFERENCES `client` (`id`),
+ CONSTRAINT `client_trader_transaction_history_ibfk_2` FOREIGN KEY (`trader_id`) REFERENCES `trader` (`id`),
+ CONSTRAINT `client_trader_transaction_history_ibfk_3` FOREIGN KEY (`transaction_id`) REFERENCES `transaction` (`id`)
+) ENGINE=InnoDB DEFAULT CHARSET=latin1
+
+
+CREATE TABLE `inventory` (
+ `productid` int(11) NOT NULL DEFAULT '0',
+ `oilrepo` double DEFAULT NULL,
+ `priceperbarrel` double DEFAULT NULL,
+ `cashrepo` double DEFAULT NULL,
+ PRIMARY KEY (`productid`)
+) ENGINE=InnoDB DEFAULT CHARSET=latin1
+
+CREATE TABLE `livesin` (
+ `clientid` int(11) NOT NULL DEFAULT '0',
+ `stname` varchar(30) NOT NULL DEFAULT '',
+ PRIMARY KEY (`clientid`,`stname`),
+ KEY `stname` (`stname`),
+ CONSTRAINT `livesin_ibfk_1` FOREIGN KEY (`clientid`) REFERENCES `client` (`id`) ON DELETE CASCADE,
+ CONSTRAINT `livesin_ibfk_2` FOREIGN KEY (`stname`) REFERENCES `address` (`stname`)
+) ENGINE=InnoDB DEFAULT CHARSET=latin1
+
+CREATE TABLE `login` (
+ `USERID` varchar(20) NOT NULL,
+ `PASSWORD` varchar(100) NOT NULL,
+ `ROLEID` int(11) NOT NULL,
+ PRIMARY KEY (`USERID`),
+ KEY `ROLEID` (`ROLEID`),
+ CONSTRAINT `login_ibfk_1` FOREIGN KEY (`ROLEID`) REFERENCES `role` (`id`)
+) ENGINE=InnoDB DEFAULT CHARSET=latin1
+
+CREATE TABLE `role` (
+ `id` int(11) NOT NULL,
+ `desc` varchar(20) NOT NULL,
+ PRIMARY KEY (`id`),
+ KEY `id` (`id`)
+) ENGINE=InnoDB DEFAULT CHARSET=latin1
+
+CREATE TABLE `trader` (
+ `id` int(11) NOT NULL AUTO_INCREMENT,
+ `fname` varchar(20) NOT NULL,
+ `lname` varchar(20) NOT NULL,
+ `phnum` varchar(15) NOT NULL,
+ `userid` varchar(20) NOT NULL,
+ PRIMARY KEY (`id`),
+ UNIQUE KEY `trader_userid` (`userid`),
+ CONSTRAINT `trader_ibfk_1` FOREIGN KEY (`userid`) REFERENCES `login` (`USERID`) ON DELETE CASCADE
+) ENGINE=InnoDB AUTO_INCREMENT=4 DEFAULT CHARSET=latin1
+
+CREATE TABLE `trader` (
+ `id` int(11) NOT NULL AUTO_INCREMENT,
+ `fname` varchar(20) NOT NULL,
+ `lname` varchar(20) NOT NULL,
+ `phnum` varchar(15) NOT NULL,
+ `userid` varchar(20) NOT NULL,
+ PRIMARY KEY (`id`),
+ UNIQUE KEY `trader_userid` (`userid`),
+ CONSTRAINT `trader_ibfk_1` FOREIGN KEY (`userid`) REFERENCES `login` (`USERID`) ON DELETE CASCADE
+) ENGINE=InnoDB AUTO_INCREMENT=4 DEFAULT CHARSET=latin1
